@@ -2,19 +2,20 @@ package bbllive
 
 import (
 	log "github.com/cihub/seelog"
-	"github.com/kless/goconfig/config"
+	//"github.com/kless/goconfig/config"
+	config "github.com/Unknwon/goconfig"
 	"os"
 	"path/filepath"
 )
 
-var Config *config.Config
+var Config *config.ConfigFile
 var main_config_file string
 
 func config_init(file string) error {
 	f, err := os.Open(file)
 	defer f.Close()
 	if err == nil {
-		Config, err = config.ReadDefault(file)
+		Config, err = config.LoadConfigFile(file)
 		main_config_file = file
 	}
 	return err
@@ -35,7 +36,7 @@ func GetConfigDir() string {
 }
 
 func GetString(section, key, def string) string {
-	v, err := Config.String(section, key)
+	v, err := Config.GetValue(section, key)
 	if err != nil {
 		return def
 	}
@@ -51,7 +52,7 @@ func GetInt(section, key string, def int) int {
 }
 
 func GetFloat(section, key string, def float64) float64 {
-	v, err := Config.Float(section, key)
+	v, err := Config.Float64(section, key)
 	if err != nil {
 		return def
 	}
